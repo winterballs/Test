@@ -1,0 +1,55 @@
+import json
+
+__id__ = "test_module"
+__name__ = "Test Module"
+__version__ = "1.0"
+__author__ = "test"
+__description__ = "это тест'"
+__icon__ = "extension"
+
+class TestModule(BasePlugin):
+    def __init__(self):
+        super().__init__()
+        self._ready = False
+
+    def on_plugin_load(self):
+        try:
+            self.add_module(
+                title="Test Module",
+                description="Модуль вывода текста",
+                icon="extension",
+                screen="main",
+                section="PLUGINS",
+                order=0
+            )
+            self._ready = True
+        except Exception as e:
+            self.toast("Load error: " + str(e))
+
+    def screen_main(self, ui, api, state):
+        try:
+            if not self._ready:
+                return ui.scaffold(
+                    title="Test",
+                    content=ui.column([
+                        ui.text("Загрузка...", "bodyMedium")
+                    ], padding=16)
+                )
+
+            return ui.scaffold(
+                title="Test Module",
+                content=ui.column([
+                    ui.text("это тест", "headlineMedium")
+                ], padding=16, spacing=12)
+            )
+        except Exception as e:
+            return ui.scaffold(
+                title="Ошибка",
+                content=ui.text(str(e) if e else "Неизвестная ошибка", "bodyMedium")
+            )
+
+    def on_plugin_unload(self):
+        try:
+            self._ready = False
+        except Exception:
+            pass
